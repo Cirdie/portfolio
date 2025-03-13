@@ -13,11 +13,13 @@ class AdminController extends Controller
     public function dashboard()
     {
         return view('admin.dashboard', [
-            'about' => About::first() ?? new About(),
-            'skills' => Skill::all(),  // ✅ Ensure this is passed
-            'contact' => Contact::first() ?? new Contact()
+            'about' => About::first(), // ✅ Ensures a single record instead of a collection
+            'skills' => Skill::all(),
+            'contact' => Contact::first(),
         ]);
     }
+
+
 
 
     // ✅ Add or Update About Section

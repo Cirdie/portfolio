@@ -11,7 +11,7 @@ class PortfolioController extends Controller
 {
     public function index()
     {
-        $about = About::all(); // Fetch data from the About model
+        $about = About::first();
         $skills = Skill::all(); // Fetch data from the Skill model
         $contacts = Contact::all(); // Fetch data from the Contact model
 

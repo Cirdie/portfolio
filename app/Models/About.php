@@ -9,7 +9,14 @@ class About extends Model
 {
     use HasFactory;
 
-    protected $table = 'about'; // Make sure your migration uses 'about' table
+    protected $table = 'about'; // ✅ Explicitly define the table name
 
-    protected $fillable = ['name', 'age', 'hometown', 'studied_at', 'course', 'hobbies'];
+    protected $fillable = [
+        'name',
+        'age',
+        'studied_at',
+        'hometown',
+        'course',
+        'hobbies',
+    ];
 }

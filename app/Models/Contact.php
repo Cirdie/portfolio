@@ -9,5 +9,11 @@ class Contact extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['facebook', 'instagram', 'phone'];
+    protected $table = 'contacts'; // ✅ Ensure correct table name
+
+    protected $fillable = [
+        'facebook',
+        'instagram',
+        'phone',
+    ];
 }

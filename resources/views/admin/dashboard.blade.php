@@ -28,9 +28,9 @@
 
             @include('partials.alerts') <!-- Flash messages (success & errors) -->
 
-            <form action="{{ $about ? route('admin.about.update', $about->id) : route('admin.about.store') }}" method="POST">
+            <form action="{{ isset($about) && $about->id ? route('admin.about.update', $about->id) : route('admin.about.store') }}" method="POST">
                 @csrf
-                @if ($about) @method('POST') @endif
+                @if(isset($about) && $about->id) @method('POST') @endif
 
                 <div class="mb-3">
                     <label class="form-label">Name</label>
@@ -43,14 +43,31 @@
                 </div>
 
                 <div class="mb-3">
+                    <label class="form-label">Studied At</label>
+                    <input type="text" class="form-control" name="studied_at" value="{{ old('studied_at', $about->studied_at ?? '') }}">
+                </div>
+
+                <div class="mb-3">
                     <label class="form-label">Hometown</label>
                     <input type="text" class="form-control" name="hometown" value="{{ old('hometown', $about->hometown ?? '') }}" required>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Course</label>
+                    <input type="text" class="form-control" name="course" value="{{ old('course', $about->course ?? '') }}">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Hobbies</label>
+                    <textarea class="form-control" name="hobbies">{{ old('hobbies', $about->hobbies ?? '') }}</textarea>
+                </div>
+
                 <button type="submit" class="btn btn-success w-100">
-                    {{ $about ? 'Update About' : 'Add About' }}
+                    {{ isset($about) && $about->id ? 'Update About' : 'Add About' }}
                 </button>
             </form>
+
+
         </div>
 
         <!-- Skills Section -->
@@ -72,7 +89,7 @@
                 @foreach ($skills as $skill)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ $skill->name }}
-                        <form action="{{ route('skills.destroy', $skill->id) }}" method="POST">
+                        <form action="{{ route('admin.skills.destroy', $skill->id) }}" method="POST">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-sm btn-danger">Delete</button>
@@ -81,40 +98,59 @@
                 @endforeach
             </ul>
 
+
+        </div>
+<!-- Contacts Section -->
+<div id="contacts" class="tab-pane fade">
+    <h2 class="mb-3">Manage Contact Information</h2>
+
+    @include('partials.alerts')
+
+    <!-- Contact Form (Update or Create) -->
+    <form action="{{ route('admin.contacts.update') }}" method="POST">
+        @csrf
+        <div class="mb-3">
+            <label class="form-label">Facebook</label>
+            <input type="url" class="form-control" name="facebook" value="{{ old('facebook', $contact->facebook ?? '') }}">
         </div>
 
-        <!-- Contacts Section -->
-        <div id="contacts" class="tab-pane fade">
-            <h2 class="mb-3">Manage Contact Information</h2>
-
-            @include('partials.alerts')
-
-            <form action="{{ $contact ? route('admin.contacts.update', $contact->id) : route('admin.contacts.store') }}" method="POST">
-                @csrf
-                @if ($contact) @method('POST') @endif
-
-                <div class="mb-3">
-                    <label class="form-label">Facebook</label>
-                    <input type="url" class="form-control" name="facebook" value="{{ old('facebook', $contact->facebook ?? '') }}">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Instagram</label>
-                    <input type="url" class="form-control" name="instagram" value="{{ old('instagram', $contact->instagram ?? '') }}">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Phone</label>
-                    <input type="text" class="form-control" name="phone" value="{{ old('phone', $contact->phone ?? '') }}">
-                </div>
-
-                <button type="submit" class="btn btn-success w-100">
-                    {{ $contact ? 'Update Contacts' : 'Add Contacts' }}
-                </button>
-            </form>
+        <div class="mb-3">
+            <label class="form-label">Instagram</label>
+            <input type="url" class="form-control" name="instagram" value="{{ old('instagram', $contact->instagram ?? '') }}">
         </div>
 
-    </div>
+        <div class="mb-3">
+            <label class="form-label">Phone</label>
+            <input type="text" class="form-control" name="phone" value="{{ old('phone', $contact->phone ?? '') }}" required>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100">
+            {{ isset($contact) && $contact->exists ? 'Update Contact' : 'Add Contact' }}
+        </button>
+    </form>
+
+    <!-- Show Contact Info and Delete Option -->
+    <ul class="list-group mt-3">
+        @if(isset($contact) && $contact->exists)
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>Facebook:</strong> <a href="{{ $contact->facebook }}" target="_blank">{{ $contact->facebook }}</a> <br>
+                    <strong>Instagram:</strong> <a href="{{ $contact->instagram }}" target="_blank">{{ $contact->instagram }}</a> <br>
+                    <strong>Phone:</strong> {{ $contact->phone }}
+                </div>
+                <form action="{{ route('admin.contacts.destroy') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this contact?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
+            </li>
+        @else
+            <li class="list-group-item text-center text-muted">No contact information available.</li>
+        @endif
+    </ul>
+</div>
+
+
 </div>
 
 @endsection

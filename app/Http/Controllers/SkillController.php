@@ -7,19 +7,18 @@ use App\Models\Skill;
 
 class SkillController extends Controller
 {
-    // Show Skills in Admin Dashboard
+    // ✅ Show Skills in Admin Dashboard
     public function index()
     {
         $skills = Skill::all();
         return view('admin.dashboard', compact('skills'));
     }
 
-
-    // Store New Skill
+    // ✅ Store New Skill (Ensure Unique)
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:skills,name', // ✅ Ensure skill name is unique
         ]);
 
         Skill::create(['name' => $request->name]);
@@ -27,7 +26,7 @@ class SkillController extends Controller
         return redirect()->back()->with('success', 'Skill added successfully!');
     }
 
-    // Delete Skill
+    // ✅ Delete Skill
     public function destroy(Skill $skill)
     {
         $skill->delete();

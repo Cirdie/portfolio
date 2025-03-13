@@ -7,20 +7,23 @@ use App\Models\About;
 
 class AboutController extends Controller
 {
-    // Show About Section
-    public function index()
+    // ✅ Show About Section in Portfolio Page
+    public function show()
     {
-        $about = About::first();
-        return view('admin.dashboard', compact('about'));
+        $about = About::first(); // ✅ Fetch only ONE record
+        return view('portfolio.about', compact('about')); // ✅ Pass the data to the correct view
     }
 
-    // Store About Information
+    // ✅ Store About Information
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'age' => 'required|integer',
-            'hometown' => 'required|string',
+            'name' => 'required|string|max:255',
+            'age' => 'required|integer|min:0',
+            'studied_at' => 'nullable|string|max:255',
+            'hometown' => 'required|string|max:255',
+            'course' => 'nullable|string|max:255',
+            'hobbies' => 'nullable|string|max:500',
         ]);
 
         About::create($request->all());
@@ -28,21 +31,32 @@ class AboutController extends Controller
         return redirect()->back()->with('success', 'About information added successfully!');
     }
 
-    // Update About Information
-    public function update(Request $request, About $about)
+    // ✅ Update About Information
+    public function update(Request $request, $about = null)
     {
         $request->validate([
-            'name' => 'required|string',
-            'age' => 'required|integer',
-            'hometown' => 'required|string',
+            'name' => 'required|string|max:255',
+            'age' => 'required|integer|min:0',
+            'studied_at' => 'nullable|string|max:255',
+            'hometown' => 'required|string|max:255',
+            'course' => 'nullable|string|max:255',
+            'hobbies' => 'nullable|string|max:500',
         ]);
 
-        $about->update($request->all());
+        $aboutRecord = About::first(); // ✅ Ensure we fetch one record
 
-        return redirect()->back()->with('success', 'About information updated successfully!');
+        if ($aboutRecord) {
+            $aboutRecord->update($request->all());
+            $message = 'About section updated!';
+        } else {
+            About::create($request->all());
+            $message = 'About section added!';
+        }
+
+        return redirect()->back()->with('success', $message);
     }
 
-    // Delete About Information
+    // ✅ Delete About Information
     public function destroy(About $about)
     {
         $about->delete();
